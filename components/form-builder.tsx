@@ -30,6 +30,7 @@ const FIELD_TYPES: { value: FieldType; label: string }[] = [
   { value: "TEXTAREA", label: "Long Text" },
   { value: "SELECT", label: "Dropdown" },
   { value: "CHECKBOX", label: "Checkbox" },
+  { value: "LINK", label: "Link" },
   { value: "FILE", label: "File Upload" },
 ];
 
@@ -181,13 +182,6 @@ export function FormBuilder({ initialForm, onSave }: FormBuilderProps) {
                           <Label>Options (one per line)</Label>
                           <Textarea
                             value={field.options?.join("\n") || ""}
-                            // onChange={(e) =>
-                            //   updateField(field.id, {
-                            //     options: e.target.value
-                            //       .split("\n")
-                            //       .filter((o) => o.trim()),
-                            //   })
-                            // }
                             onChange={(e) => {
                               const raw = e.target.value;
                               updateField(field.id, {
@@ -197,6 +191,55 @@ export function FormBuilder({ initialForm, onSave }: FormBuilderProps) {
                             placeholder="Option 1&#10;Option 2&#10;Option 3"
                             rows={3}
                           />
+                          <div className="flex items-center gap-2">
+                            <Checkbox
+                              id={`multiple-${field.id}`}
+                              checked={field.multiple || false}
+                              onCheckedChange={(checked) =>
+                                updateField(field.id, {
+                                  multiple: checked === true,
+                                })
+                              }
+                            />
+                            <Label
+                              htmlFor={`multiple-${field.id}`}
+                              className="text-sm"
+                            >
+                              Allow multiple selections
+                            </Label>
+                          </div>
+                        </div>
+                      )}
+
+                      {field.type === "LINK" && (
+                        <div className="space-y-2">
+                          <Label>Placeholder (optional)</Label>
+                          <Input
+                            value={field.placeholder || ""}
+                            onChange={(e) =>
+                              updateField(field.id, {
+                                placeholder: e.target.value,
+                              })
+                            }
+                            placeholder="Enter placeholder text..."
+                          />
+                          <div className="flex items-center gap-2">
+                            <Checkbox
+                              id={`multiple-${field.id}`}
+                              checked={field.multiple || false}
+                              onCheckedChange={(checked) =>
+                                updateField(field.id, {
+                                  multiple: checked === true,
+                                })
+                              }
+                            />
+                            <Label
+                              htmlFor={`multiple-${field.id}`}
+                              className="text-sm"
+                            >
+                              Allow multiple links
+                            </Label>
+                          </div>
                         </div>
                       )}
 

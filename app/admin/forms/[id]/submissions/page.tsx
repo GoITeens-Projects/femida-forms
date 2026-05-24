@@ -92,6 +92,35 @@ export default async function SubmissionsPage({
       );
     }
 
+    if (field.type === "LINK") {
+      return Array.isArray(answer) ? (
+        <div className="flex flex-col gap-1">
+          {answer.map((l, i) => (
+            <a
+              key={"linkf" + i}
+              href={l}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 text-primary hover:underline  max-w-60"
+            >
+              <span className="truncate">{l}</span>
+              <ExternalLink className="h-3 w-3 shrink-0" />
+            </a>
+          ))}
+        </div>
+      ) : (
+        <a
+          href={answer}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1 text-primary hover:underline"
+        >
+          {answer}
+          <ExternalLink className="h-3 w-3" />
+        </a>
+      );
+    }
+
     if (Array.isArray(answer)) {
       return answer.join(", ");
     }
@@ -137,12 +166,10 @@ export default async function SubmissionsPage({
             </p>
           ) : (
             <div className="overflow-x-auto">
-              <Table>
+              <Table className="[&_td]:align-top">
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="sticky left-0 bg-card">
-                      Discord ID
-                    </TableHead>
+                    <TableHead className="">Discord ID</TableHead>
                     <TableHead className="">User</TableHead>
                     <TableHead>Date</TableHead>
                     {form.fields.map((field) => (
@@ -152,8 +179,8 @@ export default async function SubmissionsPage({
                 </TableHeader>
                 <TableBody>
                   {submissions.map((submission) => (
-                    <TableRow key={submission.id}>
-                      <TableCell className="sticky left-0 bg-card">
+                    <TableRow key={submission.id} className="align-top">
+                      <TableCell >
                         {submission.user.discord_id}
                       </TableCell>
                       <TableCell className="whitespace-nowrap">

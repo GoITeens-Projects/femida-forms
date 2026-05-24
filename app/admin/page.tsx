@@ -28,7 +28,7 @@ import {
   Pencil,
   Trash2,
 } from "lucide-react";
-import { CopyFormLinkButton } from "@/components/CopyFormLinkBtn";
+import { CopyFormLinkButton } from "@/components/copy-form-link-btn";
 
 const appURL = process.env.NEXT_PUBLIC_APP_URL ?? "https://forms.femidabot.com";
 
