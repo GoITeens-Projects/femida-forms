@@ -76,9 +76,7 @@ export async function GET(request: NextRequest) {
 
     if (!memberResponse.ok) {
       console.error("User fetch failed:", await memberResponse.text());
-      return NextResponse.redirect(
-        new URL("/login?error=member_failed", request.url),
-      );
+      return NextResponse.redirect("https://discord.gg/goiteens");
     }
 
     const discordUser: GuildMember = await memberResponse.json();
