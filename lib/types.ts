@@ -33,6 +33,7 @@ export interface Form {
   title: string;
   description: string | null;
   fields: FormField[];
+  expires_at: string | null;
   created_at: string;
   updated_at: string;
 }

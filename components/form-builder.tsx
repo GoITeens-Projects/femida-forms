@@ -16,7 +16,23 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Plus, Trash2, GripVertical, Save } from "lucide-react";
+import {
+  Plus,
+  Trash2,
+  GripVertical,
+  Save,
+  CalendarIcon,
+  X,
+} from "lucide-react";
+import { format } from "date-fns";
+import { uk } from "date-fns/locale";
+import { toZonedTime } from "date-fns-tz";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { DateTimePicker } from "./datetime-picker";
 
 interface FormBuilderProps {
   initialForm?: Form;
@@ -38,6 +54,9 @@ export function FormBuilder({ initialForm, onSave }: FormBuilderProps) {
   const [title, setTitle] = useState(initialForm?.title || "");
   const [description, setDescription] = useState(
     initialForm?.description || "",
+  );
+  const [expiresAt, setExpiresAt] = useState<Date | null>(
+    initialForm?.expires_at ? new Date(initialForm.expires_at) : null,
   );
   const [fields, setFields] = useState<FormField[]>(initialForm?.fields || []);
   const [saving, setSaving] = useState(false);
@@ -86,7 +105,12 @@ export function FormBuilder({ initialForm, onSave }: FormBuilderProps) {
 
     setSaving(true);
     try {
-      await onSave({ title, description, fields: cleanedFields });
+      await onSave({
+        title,
+        description,
+        fields: cleanedFields,
+        expires_at: expiresAt ? expiresAt.toISOString() : null,
+      });
     } finally {
       setSaving(false);
     }
@@ -118,6 +142,42 @@ export function FormBuilder({ initialForm, onSave }: FormBuilderProps) {
               rows={3}
             />
           </div>
+          {/* expiration date selection */}
+          <div className="space-y-2">
+            <Label>Expiration Date (optional, Kyiv time)</Label>
+            <div className="flex gap-2 items-start">
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className="w-fit justify-start text-left font-normal"
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {expiresAt
+                      ? format(
+                          toZonedTime(expiresAt, "Europe/Kyiv"),
+                          "PPP HH:mm",
+                          { locale: uk },
+                        )
+                      : "Без обмеження часу"}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <DateTimePicker value={expiresAt} onChange={setExpiresAt} />
+                </PopoverContent>
+              </Popover>
+              {expiresAt && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setExpiresAt(null)}
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              )}
+            </div>
+          </div>
+          {/* expiration date selection end */}
         </CardContent>
       </Card>
 

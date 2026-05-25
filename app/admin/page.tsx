@@ -24,11 +24,11 @@ import {
   FileText,
   Users,
   BarChart3,
-  Eye,
   Pencil,
-  Trash2,
+  Table2,
 } from "lucide-react";
 import { CopyFormLinkButton } from "@/components/copy-form-link-btn";
+import { DeleteFormButton } from "@/components/delete-form-btn";
 
 const appURL = process.env.NEXT_PUBLIC_APP_URL ?? "https://forms.femidabot.com";
 
@@ -137,10 +137,12 @@ export default async function AdminPage() {
                       </TableCell>
                       <TableCell className="text-right">
                         <div className="flex justify-end gap-1">
-                          <CopyFormLinkButton url={appURL + `/forms/${form.id}`} />
+                          <CopyFormLinkButton
+                            url={appURL + `/forms/${form.id}`}
+                          />
                           <Link href={`/admin/forms/${form.id}/submissions`}>
                             <Button variant="ghost" size="icon-sm">
-                              <Eye className="h-4 w-4" />
+                              <Table2 className="h-4 w-4" />
                             </Button>
                           </Link>
                           <Link href={`/admin/forms/${form.id}/edit`}>
@@ -148,6 +150,10 @@ export default async function AdminPage() {
                               <Pencil className="h-4 w-4" />
                             </Button>
                           </Link>
+                          <DeleteFormButton
+                            formId={form.id}
+                            formTitle={form.title}
+                          />
                         </div>
                       </TableCell>
                     </TableRow>
