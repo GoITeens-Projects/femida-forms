@@ -123,9 +123,14 @@
   --shadow-xl:
     0px 8px 20px 0px hsl(0 0% 0% / 0.3), 0px 8px 10px -1px hsl(0 0% 0% / 0.3);
   --shadow-2xl: 0px 8px 20px 0px hsl(0 0% 0% / 0.75);
+
+  /* --background-image-hero: url("/hero-banner@dark.png"); */
 }
 
 @theme inline {
+  --container-center: true;
+  --container-padding: 1rem;
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -183,6 +188,16 @@
   --tracking-wide: calc(var(--tracking-normal) + 0.025em);
   --tracking-wider: calc(var(--tracking-normal) + 0.05em);
   --tracking-widest: calc(var(--tracking-normal) + 0.1em);
+
+  /* --background-image-hero: url("/hero-banner@light.png"); */
+}
+
+:root {
+  --background-image-hero: url("/hero-banner@light.png");
+}
+
+:root.dark {
+  --background-image-hero: url("/hero-banner@dark.png");
 }
 
 @layer base {
@@ -193,4 +208,8 @@
     @apply bg-background text-foreground;
     letter-spacing: var(--tracking-normal);
   }
+}
+
+button:hover {
+  cursor: pointer;
 }

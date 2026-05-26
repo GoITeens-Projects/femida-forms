@@ -21,6 +21,7 @@ import { uk } from "date-fns/locale";
 import { toZonedTime } from "date-fns-tz";
 import { parseISO } from "date-fns";
 import confetti from "canvas-confetti";
+import { usePageTitle } from "@/hooks/use-page-title";
 
 export default function FormPageClient({ formId }: { formId: string }) {
   const router = useRouter();
@@ -69,6 +70,8 @@ export default function FormPageClient({ formId }: { formId: string }) {
 
     loadForm();
   }, [formId, router]);
+
+  usePageTitle(form?.title);
 
   const handleSubmit = async (
     answers: Record<string, string | string[] | boolean>,
@@ -130,19 +133,19 @@ export default function FormPageClient({ formId }: { formId: string }) {
         <Card className="mx-auto max-w-md">
           <CardHeader className="text-center">
             <LogIn className="mx-auto mb-4 h-12 w-12 text-muted-foreground" />
-            <CardTitle>Sign In Required</CardTitle>
+            <CardTitle>Необхідно авторизуватися</CardTitle>
             <CardDescription>
-              Please sign in with Discord to fill out this form.
+              Будь ласка, увійдіть за допомогою Discord, щоб заповнити цю форму.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <Link href="/login" className="block">
-              <Button className="w-full">Sign In with Discord</Button>
+              <Button className="w-full">Увійти через Discord</Button>
             </Link>
             <Link href="/" className="block">
               <Button variant="outline" className="w-full">
                 <ArrowLeft className="mr-2 h-4 w-4" />
-                Back to Home
+                На головну
               </Button>
             </Link>
           </CardContent>
@@ -158,19 +161,19 @@ export default function FormPageClient({ formId }: { formId: string }) {
           <CardHeader className="text-center">
             <CheckCircle2 className="mx-auto mb-4 h-12 w-12 text-green-500" />
             <CardTitle>
-              {submitted ? "Submission Received!" : "Already Submitted"}
+              {submitted ? "Відповідь збережено!" : "Вже надіслано"}
             </CardTitle>
             <CardDescription>
               {submitted
-                ? "Thank you for your submission. Your response has been recorded."
-                : "You have already submitted this form."}
+                ? "Дякуємо за заповнення форми. Ваша відповідь була зареєстрована"
+                : "Ви вже надіслали цю форму"}
             </CardDescription>
           </CardHeader>
           <CardContent>
             <Link href="/" className="block">
               <Button variant="outline" className="w-full">
                 <ArrowLeft className="mr-2 h-4 w-4" />
-                Back to Home
+                На головну
               </Button>
             </Link>
           </CardContent>

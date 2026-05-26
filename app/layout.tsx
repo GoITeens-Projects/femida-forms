@@ -18,19 +18,11 @@ const _ibm_plex_mono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Form Builder - Create and Manage Forms",
+  title: "Femida Forms",
   description:
-    "A dynamic form builder with Discord authentication, file uploads, and admin panel",
+    "Форми, конкурси та опитування для учасників Discord-серверу GoITeens",
   icons: {
     icon: [
-      {
-        url: "/icon-light-32x32.png",
-        media: "(prefers-color-scheme: light)",
-      },
-      {
-        url: "/icon-dark-32x32.png",
-        media: "(prefers-color-scheme: dark)",
-      },
       {
         url: "/icon.svg",
         type: "image/svg+xml",

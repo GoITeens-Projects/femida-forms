@@ -102,7 +102,7 @@ export function FormRenderer({ form, onSubmit }: FormRendererProps) {
       if (field.required) {
         const value = answers[field.id];
         if (value === undefined || value === "" || value === false) {
-          newErrors[field.id] = "This field is required";
+          newErrors[field.id] = "Це поле є обов’язковим";
         }
       }
       if (field.type === "LINK") {
@@ -116,7 +116,7 @@ export function FormRenderer({ form, onSubmit }: FormRendererProps) {
             return false;
           }
         });
-        if (!isValid) newErrors[field.id] = "Please enter a valid URL";
+        if (!isValid) newErrors[field.id] = "Введіть дійсну URL-адресу";
       }
     });
 
@@ -263,7 +263,7 @@ export function FormRenderer({ form, onSubmit }: FormRendererProps) {
                 onClick={() => updateAnswer(field.id, [...links, ""])}
               >
                 <Plus className="mr-2 h-4 w-4" />
-                Add Link
+                Додати посилання
               </Button>
             </div>
           );
@@ -297,7 +297,7 @@ export function FormRenderer({ form, onSubmit }: FormRendererProps) {
                 </span>
                 {uploading[field.id] ? (
                   <span className="text-sm text-muted-foreground">
-                    Uploading...
+                    Завантаження...
                   </span>
                 ) : (
                   <Button
@@ -321,10 +321,12 @@ export function FormRenderer({ form, onSubmit }: FormRendererProps) {
                 className="w-full"
               >
                 <Upload className="mr-2 h-4 w-4" />
-                Choose File
+                Виберіть файл
               </Button>
             )}
-            <p className="text-xs text-muted-foreground">Max file size: 10MB</p>
+            <p className="text-xs text-muted-foreground">
+              Максимальний розмір файлу: 10 МБ
+            </p>
           </div>
         );
 
@@ -362,7 +364,7 @@ export function FormRenderer({ form, onSubmit }: FormRendererProps) {
 
           <Button type="submit" disabled={submitting} className="w-full">
             <Send className="mr-2 h-4 w-4" />
-            {submitting ? "Submitting..." : "Submit"}
+            {submitting ? "Відправка..." : "Відправити"}
           </Button>
         </form>
       </CardContent>

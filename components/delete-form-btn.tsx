@@ -32,10 +32,10 @@ export function DeleteFormButton({
     try {
       const res = await fetch(`/api/forms/${formId}`, { method: "DELETE" });
       if (!res.ok) throw new Error("Failed to delete");
-      toast.success(`"${formTitle}" deleted`);
+      toast.success(`"${formTitle}" видалено`);
       router.refresh();
     } catch {
-      toast.error("Failed to delete form");
+      toast.error("Не вдалося видалити форму");
     } finally {
       setDeleting(false);
     }
@@ -54,21 +54,20 @@ export function DeleteFormButton({
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Delete form?</AlertDialogTitle>
+          <AlertDialogTitle>Видалити форму?</AlertDialogTitle>
           <AlertDialogDescription>
-            This will permanently delete{" "}
-            <strong>&quot;{formTitle}&quot;</strong> and all its submissions.
-            This action cannot be undone.
+            Це назавжди видалить форму <strong>&quot;{formTitle}&quot;</strong>{" "}
+            та всі відповіді до неї. Цю дію неможливо скасувати.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogCancel>Скасувати</AlertDialogCancel>
           <AlertDialogAction
             onClick={handleDelete}
             disabled={deleting}
             className="bg-destructive  hover:bg-destructive/90"
           >
-            {deleting ? "Deleting..." : "Delete"}
+            {deleting ? "Видалення..." : "Видалити"}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

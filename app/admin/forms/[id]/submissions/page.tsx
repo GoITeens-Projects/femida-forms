@@ -28,6 +28,10 @@ interface SubmissionsPageProps {
   params: Promise<{ id: string }>;
 }
 
+export const metadata = {
+  title: "Відповіді на форму",
+};
+
 export default async function SubmissionsPage({
   params,
 }: SubmissionsPageProps) {
@@ -47,9 +51,9 @@ export default async function SubmissionsPage({
   const submissions = await getSubmissionsByFormId(id);
 
   const exportToCSV = () => {
-    const headers = ["User", "Date", ...form.fields.map((f) => f.label)];
+    const headers = ["Користувач", "Дата", ...form.fields.map((f) => f.label)];
     const rows = submissions.map((s) => [
-      s.user?.username || "Unknown",
+      s.user?.username || "Невідомо",
       new Date(s.created_at).toISOString(),
       ...form.fields.map((f) => {
         const value = s.answers[f.id];
@@ -75,7 +79,7 @@ export default async function SubmissionsPage({
     }
 
     if (typeof answer === "boolean") {
-      return answer ? "Yes" : "No";
+      return answer ? "Так" : "Ні";
     }
 
     if (field.type === "FILE" && typeof answer === "string") {
@@ -86,7 +90,7 @@ export default async function SubmissionsPage({
           rel="noopener noreferrer"
           className="inline-flex items-center gap-1 text-primary hover:underline"
         >
-          View File
+          Дивитись файл
           <ExternalLink className="h-3 w-3" />
         </a>
       );
@@ -137,18 +141,18 @@ export default async function SubmissionsPage({
             className="mb-2 inline-flex items-center text-sm text-muted-foreground hover:text-foreground"
           >
             <ArrowLeft className="mr-1 h-4 w-4" />
-            Back to Admin
+            Назад до Адмін панелі
           </Link>
           <h1 className="text-3xl font-bold">{form.title}</h1>
           <p className="text-muted-foreground">
-            {submissions.length} submission{submissions.length !== 1 ? "s" : ""}
+            {submissions.length} відповід{submissions.length !== 1 ? "і" : "ь"}
           </p>
         </div>
         {submissions.length > 0 && (
           <a href={exportToCSV()} download={`${form.title}-submissions.csv`}>
             <Button variant="outline">
               <Download className="mr-2 h-4 w-4" />
-              Export CSV
+              Експортувати в CSV
             </Button>
           </a>
         )}
@@ -156,13 +160,13 @@ export default async function SubmissionsPage({
 
       <Card>
         <CardHeader>
-          <CardTitle>Submissions</CardTitle>
-          <CardDescription>All responses for this form</CardDescription>
+          <CardTitle>Відповіді</CardTitle>
+          <CardDescription>Усі відповіді на цю форму</CardDescription>
         </CardHeader>
         <CardContent>
           {submissions.length === 0 ? (
             <p className="py-8 text-center text-muted-foreground">
-              No submissions yet
+              Поки що немає відповідей
             </p>
           ) : (
             <div className="overflow-x-auto">
@@ -170,8 +174,8 @@ export default async function SubmissionsPage({
                 <TableHeader>
                   <TableRow>
                     <TableHead className="">Discord ID</TableHead>
-                    <TableHead className="">User</TableHead>
-                    <TableHead>Date</TableHead>
+                    <TableHead className="">Користувач</TableHead>
+                    <TableHead>Дата</TableHead>
                     {form.fields.map((field) => (
                       <TableHead key={field.id}>{field.label}</TableHead>
                     ))}
@@ -180,9 +184,7 @@ export default async function SubmissionsPage({
                 <TableBody>
                   {submissions.map((submission) => (
                     <TableRow key={submission.id} className="align-top">
-                      <TableCell >
-                        {submission.user.discord_id}
-                      </TableCell>
+                      <TableCell>{submission.user.discord_id}</TableCell>
                       <TableCell className="whitespace-nowrap">
                         <div className="flex items-center gap-2">
                           <Avatar className="h-6 w-6">
@@ -196,7 +198,7 @@ export default async function SubmissionsPage({
                             </AvatarFallback>
                           </Avatar>
                           <span className="font-medium">
-                            {submission.user?.username || "Unknown"}
+                            {submission.user?.username || "Невідомо"}
                           </span>
                         </div>
                       </TableCell>

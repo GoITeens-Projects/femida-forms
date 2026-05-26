@@ -42,12 +42,12 @@ interface FormBuilderProps {
 }
 
 const FIELD_TYPES: { value: FieldType; label: string }[] = [
-  { value: "TEXT", label: "Short Text" },
-  { value: "TEXTAREA", label: "Long Text" },
-  { value: "SELECT", label: "Dropdown" },
-  { value: "CHECKBOX", label: "Checkbox" },
-  { value: "LINK", label: "Link" },
-  { value: "FILE", label: "File Upload" },
+  { value: "TEXT", label: "Короткий текст" },
+  { value: "TEXTAREA", label: "Довгий текст" },
+  { value: "SELECT", label: "Варіанти" },
+  { value: "CHECKBOX", label: "Прапорець" },
+  { value: "LINK", label: "Посилання" },
+  { value: "FILE", label: "Файл" },
 ];
 
 export function FormBuilder({ initialForm, onSave }: FormBuilderProps) {
@@ -120,31 +120,31 @@ export function FormBuilder({ initialForm, onSave }: FormBuilderProps) {
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle>Form Details</CardTitle>
+          <CardTitle>Основна інформація про форму</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="title">Form Title</Label>
+            <Label htmlFor="title">Назва форми</Label>
             <Input
               id="title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="Enter form title..."
+              placeholder="Введіть назву форми..."
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="description">Description (optional)</Label>
+            <Label htmlFor="description">Опис (не обов’язково)</Label>
             <Textarea
               id="description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="Enter form description..."
+              placeholder="Введіть опис форми..."
               rows={3}
             />
           </div>
           {/* expiration date selection */}
           <div className="space-y-2">
-            <Label>Expiration Date (optional, Kyiv time)</Label>
+            <Label>Форма діє до (Київський час)</Label>
             <div className="flex gap-2 items-start">
               <Popover>
                 <PopoverTrigger asChild>
@@ -183,16 +183,17 @@ export function FormBuilder({ initialForm, onSave }: FormBuilderProps) {
 
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle>Form Fields</CardTitle>
+          <CardTitle>Поля форми</CardTitle>
           <Button onClick={addField} size="sm">
             <Plus className="mr-2 h-4 w-4" />
-            Add Field
+            Додати поле
           </Button>
         </CardHeader>
         <CardContent className="space-y-4">
           {fields.length === 0 ? (
             <p className="text-center text-muted-foreground py-8">
-              No fields yet. Click &quot;Add Field&quot; to get started.
+              Поки що немає полів. Натисніть &quot;Додати поле&quot; щоб
+              розпочати
             </p>
           ) : (
             fields.map((field, index) => (
@@ -206,17 +207,17 @@ export function FormBuilder({ initialForm, onSave }: FormBuilderProps) {
                     <div className="flex-1 space-y-4">
                       <div className="grid gap-4 sm:grid-cols-2">
                         <div className="space-y-2">
-                          <Label>Field Label</Label>
+                          <Label>Назва поля</Label>
                           <Input
                             value={field.label}
                             onChange={(e) =>
                               updateField(field.id, { label: e.target.value })
                             }
-                            placeholder="Enter field label..."
+                            placeholder="Введіть назву поля..."
                           />
                         </div>
                         <div className="space-y-2">
-                          <Label>Field Type</Label>
+                          <Label>Тип поля</Label>
                           <Select
                             value={field.type}
                             onValueChange={(value: FieldType) =>
@@ -239,7 +240,7 @@ export function FormBuilder({ initialForm, onSave }: FormBuilderProps) {
 
                       {field.type === "SELECT" && (
                         <div className="space-y-2">
-                          <Label>Options (one per line)</Label>
+                          <Label>Варіанти (по одному в рядку)</Label>
                           <Textarea
                             value={field.options?.join("\n") || ""}
                             onChange={(e) => {
@@ -248,7 +249,7 @@ export function FormBuilder({ initialForm, onSave }: FormBuilderProps) {
                                 options: raw === "" ? [] : raw.split("\n"),
                               });
                             }}
-                            placeholder="Option 1&#10;Option 2&#10;Option 3"
+                            placeholder={`Варіант 1\nВаріант 2\nВаріант 3`}
                             rows={3}
                           />
                           <div className="flex items-center gap-2">
@@ -265,7 +266,7 @@ export function FormBuilder({ initialForm, onSave }: FormBuilderProps) {
                               htmlFor={`multiple-${field.id}`}
                               className="text-sm"
                             >
-                              Allow multiple selections
+                              Дозволити вибір декількох варіантів
                             </Label>
                           </div>
                         </div>
@@ -273,7 +274,7 @@ export function FormBuilder({ initialForm, onSave }: FormBuilderProps) {
 
                       {field.type === "LINK" && (
                         <div className="space-y-2">
-                          <Label>Placeholder (optional)</Label>
+                          <Label>Текст-заповнювач (не обов'язково)</Label>
                           <Input
                             value={field.placeholder || ""}
                             onChange={(e) =>
@@ -281,7 +282,7 @@ export function FormBuilder({ initialForm, onSave }: FormBuilderProps) {
                                 placeholder: e.target.value,
                               })
                             }
-                            placeholder="Enter placeholder text..."
+                            placeholder="Введіть текст-заповнювач..."
                           />
                           <div className="flex items-center gap-2">
                             <Checkbox
@@ -297,7 +298,7 @@ export function FormBuilder({ initialForm, onSave }: FormBuilderProps) {
                               htmlFor={`multiple-${field.id}`}
                               className="text-sm"
                             >
-                              Allow multiple links
+                              Дозволити декілька посилань
                             </Label>
                           </div>
                         </div>
@@ -305,7 +306,7 @@ export function FormBuilder({ initialForm, onSave }: FormBuilderProps) {
 
                       {(field.type === "TEXT" || field.type === "TEXTAREA") && (
                         <div className="space-y-2">
-                          <Label>Placeholder (optional)</Label>
+                          <Label>Текст-заповнювач (не обов'язково)</Label>
                           <Input
                             value={field.placeholder || ""}
                             onChange={(e) =>
@@ -313,7 +314,7 @@ export function FormBuilder({ initialForm, onSave }: FormBuilderProps) {
                                 placeholder: e.target.value,
                               })
                             }
-                            placeholder="Enter placeholder text..."
+                            placeholder="Введіть текст-заповнювач..."
                           />
                         </div>
                       )}
@@ -332,7 +333,7 @@ export function FormBuilder({ initialForm, onSave }: FormBuilderProps) {
                           htmlFor={`required-${field.id}`}
                           className="text-sm"
                         >
-                          Required field
+                          Обов’язкове поле
                         </Label>
                       </div>
                     </div>
@@ -355,7 +356,7 @@ export function FormBuilder({ initialForm, onSave }: FormBuilderProps) {
       <div className="flex justify-end">
         <Button onClick={handleSave} disabled={saving} size="lg">
           <Save className="mr-2 h-4 w-4" />
-          {saving ? "Saving..." : initialForm ? "Update Form" : "Create Form"}
+          {saving ? "Збереження..." : initialForm ? "Оновити форму" : "Створити форму"}
         </Button>
       </div>
     </div>
