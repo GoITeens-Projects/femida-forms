@@ -19,14 +19,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import {
-  Plus,
-  FileText,
-  Users,
-  BarChart3,
-  Pencil,
-  Table2,
-} from "lucide-react";
+import { Plus, FileText, Users, BarChart3, Pencil, Table2 } from "lucide-react";
 import { CopyFormLinkButton } from "@/components/copy-form-link-btn";
 import { DeleteFormButton } from "@/components/delete-form-btn";
 
@@ -54,15 +47,15 @@ export default async function AdminPage() {
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Admin Panel</h1>
+          <h1 className="text-3xl font-bold">Адмін панель</h1>
           <p className="text-muted-foreground">
-            Manage forms and view submissions
+            Управління формами та перегляд надісланих відповідей
           </p>
         </div>
         <Link href="/admin/forms/new">
           <Button>
             <Plus className="mr-2 h-4 w-4" />
-            Create Form
+            Створити форму
           </Button>
         </Link>
       </div>
@@ -70,38 +63,44 @@ export default async function AdminPage() {
       <div className="mb-8 grid gap-4 md:grid-cols-3">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Total Forms</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Загальна кількість форм
+            </CardTitle>
             <FileText className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.totalForms}</div>
+            <div className="text-4xl font-bold">{stats.totalForms}</div>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium">
-              Total Submissions
+              Загальна кількість відповідей
             </CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.totalSubmissions}</div>
+            <div className="text-4xl font-bold">{stats.totalSubmissions}</div>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Response Rate</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Кількість відповідей
+            </CardTitle>
             <BarChart3 className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-4xl font-bold">
               {stats.totalForms > 0
                 ? Math.round(
                     (stats.totalSubmissions / stats.totalForms) * 100,
                   ) / 100
                 : 0}
             </div>
-            <p className="text-xs text-muted-foreground">avg per form</p>
+            <p className="text-xs text-muted-foreground">
+              середнє значення на форму
+            </p>
           </CardContent>
         </Card>
       </div>
@@ -109,21 +108,21 @@ export default async function AdminPage() {
       <div className="grid gap-8 lg:grid-cols-2">
         <Card>
           <CardHeader>
-            <CardTitle>Forms</CardTitle>
-            <CardDescription>Manage your forms</CardDescription>
+            <CardTitle>Форми</CardTitle>
+            <CardDescription>Керуйте своїми формами</CardDescription>
           </CardHeader>
           <CardContent>
             {forms.length === 0 ? (
               <p className="py-4 text-center text-muted-foreground">
-                No forms yet
+                Поки що немає форм
               </p>
             ) : (
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Title</TableHead>
-                    <TableHead>Fields</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
+                    <TableHead>Назва</TableHead>
+                    <TableHead>Поля</TableHead>
+                    <TableHead className="text-right">Дії</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -166,31 +165,31 @@ export default async function AdminPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Recent Submissions</CardTitle>
-            <CardDescription>Latest form responses</CardDescription>
+            <CardTitle>Нещодавні відповіді</CardTitle>
+            <CardDescription>Останні відповіді на форму</CardDescription>
           </CardHeader>
           <CardContent>
             {stats.recentSubmissions.length === 0 ? (
               <p className="py-4 text-center text-muted-foreground">
-                No submissions yet
+                Поки що немає відповідей
               </p>
             ) : (
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>User</TableHead>
-                    <TableHead>Form</TableHead>
-                    <TableHead>Date</TableHead>
+                    <TableHead>Користувач</TableHead>
+                    <TableHead>Форма</TableHead>
+                    <TableHead>Дата</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {stats.recentSubmissions.map((submission) => (
                     <TableRow key={submission.id}>
                       <TableCell className="font-medium">
-                        {submission.user?.username || "Unknown"}
+                        {submission.user?.username || "Невідомо"}
                       </TableCell>
                       <TableCell>
-                        {submission.form?.title || "Unknown"}
+                        {submission.form?.title || "Невідомо"}
                       </TableCell>
                       <TableCell>
                         {new Date(submission.created_at).toLocaleDateString()}

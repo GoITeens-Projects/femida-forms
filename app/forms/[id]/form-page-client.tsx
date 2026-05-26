@@ -20,6 +20,7 @@ import { format } from "date-fns";
 import { uk } from "date-fns/locale";
 import { toZonedTime } from "date-fns-tz";
 import { parseISO } from "date-fns";
+import confetti from "canvas-confetti";
 
 export default function FormPageClient({ formId }: { formId: string }) {
   const router = useRouter();
@@ -85,7 +86,19 @@ export default function FormPageClient({ formId }: { formId: string }) {
       }
 
       setSubmitted(true);
-      toast.success("Form submitted successfully!");
+      // toast.success("Форма успішно відправлена!");
+      confetti({
+        particleCount: 80,
+        angle: 60,
+        spread: 55,
+        origin: { x: 0, y: 0.65 },
+      });
+      confetti({
+        particleCount: 80,
+        angle: 120,
+        spread: 55,
+        origin: { x: 1, y: 0.65 },
+      });
     } catch (error) {
       toast.error(
         error instanceof Error ? error.message : "Failed to submit form",

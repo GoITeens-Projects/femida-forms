@@ -11,6 +11,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { LogOut, Shield, FileText } from 'lucide-react'
+import { ThemeToggle } from './toggle-theme'
 
 export function Header() {
   const { user, loading } = useAuth()
@@ -24,6 +25,7 @@ export function Header() {
         </Link>
 
         <nav className="flex items-center gap-4">
+          <ThemeToggle />
           {loading ? (
             <div className="h-9 w-24 animate-pulse rounded-md bg-muted" />
           ) : user ? (

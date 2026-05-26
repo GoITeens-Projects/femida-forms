@@ -80,6 +80,32 @@ export async function getAllForms(): Promise<Form[]> {
   return data as Form[];
 }
 
+export async function getUnsubmittedValidForms(userId: string) {
+  const supabase = await createClient();
+
+  const { data: submissions } = await supabase
+    .from("submissions")
+    .select("form_id")
+    .eq("user_id", userId);
+
+  const submittedFormIds = submissions?.map((s) => s.form_id) ?? [];
+
+  const query = supabase
+    .from("forms")
+    .select("*")
+    .or(`expires_at.is.null,expires_at.gt.${new Date().toISOString()}`)
+    .order("created_at", { ascending: false });
+
+  if (submittedFormIds.length > 0) {
+    query.not("id", "in", `(${submittedFormIds.join(",")})`);
+  }
+
+  const { data, error } = await query;
+
+  if (error || !data) return [];
+  return data as Form[];
+}
+
 export async function getFormById(id: string): Promise<Form | null> {
   const supabase = await createClient();
   const { data, error } = await supabase
@@ -193,4 +219,18 @@ export async function getAllSubmissions(): Promise<
 
   if (error || !data) return [];
   return data as (Submission & { user: User; form: Form })[];
+}
+
+export async function getFormsByUserSubmissions(
+  userId: string,
+): Promise<Form[]> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("submissions")
+    .select("form:forms(*)")
+    .eq("user_id", userId)
+    .order("created_at", { ascending: false });
+
+  if (error || !data) return [];
+  return data.map((submission) => submission.form as unknown as Form);
 }

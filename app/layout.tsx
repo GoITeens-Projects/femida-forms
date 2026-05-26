@@ -1,15 +1,11 @@
 import type { Metadata } from "next";
-import {
-  
-  IBM_Plex_Sans,
-  IBM_Plex_Mono,
-} from "next/font/google";
+import { IBM_Plex_Sans, IBM_Plex_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider } from "@/components/auth-provider";
 import { Header } from "@/components/header";
 import "./globals.css";
-
+import { ThemeProvider } from "@/components/theme-provider";
 
 const _ibm_plex_sans = IBM_Plex_Sans({
   subsets: ["latin", "cyrillic-ext"],
@@ -50,16 +46,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="bg-background">
-      <body className={`${_ibm_plex_sans.variable} ${_ibm_plex_mono.variable}  antialiased`}>
-        <AuthProvider>
-          <div className="flex min-h-screen flex-col">
-            <Header />
-            <main className="flex-1">{children}</main>
-          </div>
-        </AuthProvider>
-        <Toaster />
-        {process.env.NODE_ENV === "production" && <Analytics />}
+    <html lang="uk" suppressHydrationWarning className="bg-background">
+      <body
+        className={`${_ibm_plex_sans.variable} ${_ibm_plex_mono.variable}  antialiased`}
+      >
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <AuthProvider>
+            <div className="flex min-h-screen flex-col">
+              <Header />
+              <main className="flex-1">{children}</main>
+            </div>
+          </AuthProvider>
+          <Toaster />
+          {process.env.NODE_ENV === "production" && <Analytics />}
+        </ThemeProvider>
       </body>
     </html>
   );
