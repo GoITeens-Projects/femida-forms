@@ -35,9 +35,9 @@
   --sidebar-accent-foreground: oklch(0.4128 0.0695 39.1533);
   --sidebar-border: oklch(0.9102 0.008 67.7253);
   --sidebar-ring: oklch(0.5355 0.0867 241.9083);
-  --font-sans: Inter, system-ui, sans-serif;
+  --font-sans: var(--font-ibm-sans);
   --font-serif: Georgia, serif;
-  --font-mono: JetBrains Mono, monospace;
+  --font-mono: var(--font-ibm-mono);
   --radius: 1rem;
   --shadow-x: 0px;
   --shadow-y: 4px;
@@ -100,9 +100,9 @@
   --sidebar-accent-foreground: oklch(0.9632 0.0044 67.772);
   --sidebar-border: oklch(0.3152 0.0287 248.7551);
   --sidebar-ring: oklch(0.6481 0.0991 241.5839);
-  --font-sans: Inter, system-ui, sans-serif;
+  --font-sans: var(--font-ibm-sans);
   --font-serif: Georgia, serif;
-  --font-mono: JetBrains Mono, monospace;
+  --font-mono: var(--font-ibm-mono);
   --radius: 1rem;
   --shadow-x: 0px;
   --shadow-y: 8px;

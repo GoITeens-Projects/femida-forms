@@ -6,15 +6,16 @@ import { AuthProvider } from "@/components/auth-provider";
 import { Header } from "@/components/header";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
+import clsx from "clsx";
 
 const _ibm_plex_sans = IBM_Plex_Sans({
   subsets: ["latin", "cyrillic-ext"],
-  variable: "--font-sans",
+  variable: "--font-ibm-sans",
 });
 const _ibm_plex_mono = IBM_Plex_Mono({
   subsets: ["latin", "cyrillic-ext"],
   weight: ["400", "700"],
-  variable: "--font-mono",
+  variable: "--font-ibm-mono",
 });
 
 export const metadata: Metadata = {
@@ -38,10 +39,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="uk" suppressHydrationWarning className="bg-background">
-      <body
-        className={`${_ibm_plex_sans.variable} ${_ibm_plex_mono.variable}  antialiased`}
-      >
+    <html
+      lang="uk"
+      suppressHydrationWarning
+      className={clsx(
+        _ibm_plex_mono.variable,
+        _ibm_plex_sans.variable,
+        "antialiased",
+        "bg-background",
+      )}
+    >
+      <body className="antialiased">
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <AuthProvider>
             <div className="flex min-h-screen flex-col">
