@@ -22,3 +22,4 @@ jobs:
 
       - name: Deploy to Vercel
         run: vercel deploy --prod --yes --no-wait --token=${{ secrets.VERCEL_TOKEN }}
+        
