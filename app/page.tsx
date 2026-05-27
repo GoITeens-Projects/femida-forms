@@ -35,9 +35,9 @@ export default async function HomePage() {
             <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
               Femida Forms
             </h1>
-            <p className="text-lg text-muted-foreground">
+            <p className="text-lg text-foreground/92 text-balance">
               Приймай участь в конкурсах та опитуваннях на Discord-сервері
-              GoITeens. Реєстрація через Discord обов'язкова
+              GoITeens <br /> Реєстрація через Discord обов'язкова
             </p>
             {!session && (
               <Link href="/login">

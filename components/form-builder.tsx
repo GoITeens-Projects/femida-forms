@@ -45,7 +45,7 @@ const FIELD_TYPES: { value: FieldType; label: string }[] = [
   { value: "TEXT", label: "Короткий текст" },
   { value: "TEXTAREA", label: "Довгий текст" },
   { value: "SELECT", label: "Варіанти" },
-  { value: "CHECKBOX", label: "Прапорець" },
+  { value: "CHECKBOX", label: "Чекбокс" },
   { value: "LINK", label: "Посилання" },
   { value: "FILE", label: "Файл" },
 ];
