@@ -21,5 +21,4 @@ jobs:
         run: npm install -g vercel@latest
 
       - name: Deploy to Vercel
-        run: vercel deploy --prod --yes --no-wait --token=${{ secrets.VERCEL_TOKEN }}
-        
+        run: vercel deploy --prod --yes --no-wait --no-git-metadata --token=${{ secrets.VERCEL_TOKEN }}
