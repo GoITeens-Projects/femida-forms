@@ -153,7 +153,12 @@ export async function deleteForm(id: string): Promise<boolean> {
 
   const { error } = await supabase.from("forms").delete().eq("id", id);
   if (error) {
-    console.error("Error while deleting form " + error);
+    console.error(
+      "Error while deleting form ",
+      error.message,
+      error.details,
+      error.hint,
+    );
   }
   return !error;
 }
