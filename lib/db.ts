@@ -151,13 +151,6 @@ export async function updateForm(
 export async function deleteForm(id: string): Promise<boolean> {
   const supabase = await createClient();
 
-  const { error: subError } = await supabase
-    .from("submissions")
-    .delete()
-    .eq("form_id", id);
-
-  if (subError) return false;
-
   const { error } = await supabase.from("forms").delete().eq("id", id);
 
   return !error;
