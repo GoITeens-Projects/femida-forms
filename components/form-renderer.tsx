@@ -340,7 +340,9 @@ export function FormRenderer({ form, onSubmit }: FormRendererProps) {
       <CardHeader>
         <CardTitle className="text-2xl">{form.title}</CardTitle>
         {form.description && (
-          <CardDescription>{form.description}</CardDescription>
+          <CardDescription className="whitespace-pre-wrap">
+            {form.description}
+          </CardDescription>
         )}
       </CardHeader>
       <CardContent>
