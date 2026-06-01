@@ -38,6 +38,8 @@ export interface Form {
   updated_at: string;
 }
 
+export type NotSavedForm = Omit<Form, "id" | "created_at" | "updated_at">;
+
 // Submission types
 export interface Submission {
   id: string;

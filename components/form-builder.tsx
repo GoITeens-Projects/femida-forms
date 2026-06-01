@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
-import type { Form, FormField, FieldType } from "@/lib/types";
+import type { Form, FormField, FieldType, NotSavedForm } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -35,10 +35,8 @@ import {
 import { DateTimePicker } from "./datetime-picker";
 
 interface FormBuilderProps {
-  initialForm?: Form;
-  onSave: (
-    form: Omit<Form, "id" | "created_at" | "updated_at">,
-  ) => Promise<void>;
+  initialForm?: Form | NotSavedForm;
+  onSave: (form: NotSavedForm) => Promise<void>;
 }
 
 const FIELD_TYPES: { value: FieldType; label: string }[] = [
@@ -354,18 +352,14 @@ export function FormBuilder({ initialForm, onSave }: FormBuilderProps) {
       </Card>
 
       <div className="flex justify-end">
-        <Button
-          onClick={addField}
-          size="lg"
-          className="mr-2 aspect-square"
-        >
+        <Button onClick={addField} size="lg" className="mr-2 aspect-square">
           <Plus className="h-5 w-5" />
         </Button>
         <Button onClick={handleSave} disabled={saving} size="lg">
           <Save className="mr-2 h-4 w-4" />
           {saving
             ? "Збереження..."
-            : initialForm
+            : initialForm && "id" in initialForm
               ? "Оновити форму"
               : "Створити форму"}
         </Button>

@@ -1,14 +1,30 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useState, useEffect } from "react";
 import { FormBuilder } from "@/components/form-builder";
+import { NotSavedForm } from "@/lib/types";
 import { toast } from "sonner";
 import { usePageTitle } from "@/hooks/use-page-title";
+import { toNotSavedForm } from "@/lib/utils";
 
 export default function NewFormPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const duplicateFrom = searchParams.get("duplicateFrom");
 
   usePageTitle("Створення нової форми");
+
+  const [prefill, setPrefill] = useState<NotSavedForm | undefined>();
+
+  useEffect(() => {
+    if (!duplicateFrom) return;
+    fetch(`/api/forms/${duplicateFrom}`)
+      .then((res) => res.json())
+      .then((form) => setPrefill(toNotSavedForm(form)))
+      .catch(() => toast.error("Не вдалося завантажити форму"));
+  }, [duplicateFrom]);
+
   const handleSave = async (formData: {
     title: string;
     description: string | null;
@@ -43,7 +59,11 @@ export default function NewFormPage() {
           Створіть свою форму з різними полями
         </p>
       </div>
-      <FormBuilder onSave={handleSave} />
+      <FormBuilder
+        key={prefill ? "prefilled" : "empty"}
+        initialForm={prefill}
+        onSave={handleSave}
+      />
     </div>
   );
 }

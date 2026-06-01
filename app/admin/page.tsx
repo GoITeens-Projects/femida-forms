@@ -22,6 +22,7 @@ import { Badge } from "@/components/ui/badge";
 import { Plus, FileText, Users, BarChart3, Pencil, Table2 } from "lucide-react";
 import { CopyFormLinkButton } from "@/components/copy-form-link-btn";
 import { DeleteFormButton } from "@/components/delete-form-btn";
+import { DuplicateFormButton } from "@/components/duplicate-form-btn";
 
 const appURL = process.env.NEXT_PUBLIC_APP_URL ?? "https://forms.femidabot.com";
 
@@ -144,6 +145,7 @@ export default async function AdminPage() {
                               <Table2 className="h-4 w-4" />
                             </Button>
                           </Link>
+                          <DuplicateFormButton formId={form.id} />
                           <Link href={`/admin/forms/${form.id}/edit`}>
                             <Button variant="ghost" size="icon-sm">
                               <Pencil className="h-4 w-4" />
