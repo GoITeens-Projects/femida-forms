@@ -354,9 +354,20 @@ export function FormBuilder({ initialForm, onSave }: FormBuilderProps) {
       </Card>
 
       <div className="flex justify-end">
+        <Button
+          onClick={addField}
+          size="lg"
+          className="mr-2 aspect-square"
+        >
+          <Plus className="h-5 w-5" />
+        </Button>
         <Button onClick={handleSave} disabled={saving} size="lg">
           <Save className="mr-2 h-4 w-4" />
-          {saving ? "Збереження..." : initialForm ? "Оновити форму" : "Створити форму"}
+          {saving
+            ? "Збереження..."
+            : initialForm
+              ? "Оновити форму"
+              : "Створити форму"}
         </Button>
       </div>
     </div>
