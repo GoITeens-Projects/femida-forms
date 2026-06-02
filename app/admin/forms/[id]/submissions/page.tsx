@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import { toZonedTime, format } from "date-fns-tz";
 import { getSession, isAdmin } from "@/lib/auth";
 import { getFormById, getSubmissionsByFormId } from "@/lib/db";
 import { Button } from "@/components/ui/button";
@@ -203,7 +204,11 @@ export default async function SubmissionsPage({
                         </div>
                       </TableCell>
                       <TableCell className="whitespace-nowrap">
-                        {new Date(submission.created_at).toLocaleString()}
+                        {format(
+                          toZonedTime(submission.created_at, "Europe/Kiev"),
+                          "dd.MM.yyyy, HH:mm:ss",
+                          { timeZone: "Europe/Kiev" },
+                        )}
                       </TableCell>
                       {form.fields.map((field) => (
                         <TableCell key={field.id}>
