@@ -23,6 +23,7 @@ import { Plus, FileText, Users, BarChart3, Pencil, Table2 } from "lucide-react";
 import { CopyFormLinkButton } from "@/components/copy-form-link-btn";
 import { DeleteFormButton } from "@/components/delete-form-btn";
 import { DuplicateFormButton } from "@/components/duplicate-form-btn";
+import { DesktopTooltip } from "@/components/ui/desktop-tooltip";
 
 const appURL = process.env.NEXT_PUBLIC_APP_URL ?? "https://forms.femidabot.com";
 
@@ -137,24 +138,44 @@ export default async function AdminPage() {
                       </TableCell>
                       <TableCell className="text-right">
                         <div className="flex justify-end gap-1">
-                          <CopyFormLinkButton
-                            url={appURL + `/forms/${form.id}`}
-                          />
-                          <Link href={`/admin/forms/${form.id}/submissions`}>
-                            <Button variant="ghost" size="icon-sm">
-                              <Table2 className="h-4 w-4" />
-                            </Button>
-                          </Link>
-                          <DuplicateFormButton formId={form.id} />
-                          <Link href={`/admin/forms/${form.id}/edit`}>
-                            <Button variant="ghost" size="icon-sm">
-                              <Pencil className="h-4 w-4" />
-                            </Button>
-                          </Link>
-                          <DeleteFormButton
-                            formId={form.id}
-                            formTitle={form.title}
-                          />
+                          <DesktopTooltip content="Скопіювати посилання">
+                            <div>
+                              <CopyFormLinkButton
+                                url={appURL + `/forms/${form.id}`}
+                              />
+                            </div>
+                          </DesktopTooltip>
+
+                          <DesktopTooltip content="Відповіді">
+                            <Link href={`/admin/forms/${form.id}/submissions`}>
+                              <Button variant="ghost" size="icon-sm">
+                                <Table2 className="h-4 w-4" />
+                              </Button>
+                            </Link>
+                          </DesktopTooltip>
+
+                          <DesktopTooltip content="Створити дублікат">
+                            <div>
+                              <DuplicateFormButton formId={form.id} />
+                            </div>
+                          </DesktopTooltip>
+
+                          <DesktopTooltip content="Редагувати">
+                            <Link href={`/admin/forms/${form.id}/edit`}>
+                              <Button variant="ghost" size="icon-sm">
+                                <Pencil className="h-4 w-4" />
+                              </Button>
+                            </Link>
+                          </DesktopTooltip>
+
+                          <DesktopTooltip content="Видалити" >
+                            <div>
+                              <DeleteFormButton
+                                formId={form.id}
+                                formTitle={form.title}
+                              />
+                            </div>
+                          </DesktopTooltip>
                         </div>
                       </TableCell>
                     </TableRow>
