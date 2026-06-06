@@ -174,6 +174,7 @@ export default async function SubmissionsPage({
               <Table className="[&_td]:align-top">
                 <TableHeader>
                   <TableRow>
+                    <TableHead>№</TableHead>
                     <TableHead className="">Discord ID</TableHead>
                     <TableHead className="">Користувач</TableHead>
                     <TableHead>Дата</TableHead>
@@ -183,8 +184,9 @@ export default async function SubmissionsPage({
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {submissions.map((submission) => (
+                  {submissions.map((submission, index) => (
                     <TableRow key={submission.id} className="align-top">
+                      <TableCell>{submissions.length - index}</TableCell>
                       <TableCell>{submission.user.discord_id}</TableCell>
                       <TableCell className="whitespace-nowrap">
                         <div className="flex items-center gap-2">
