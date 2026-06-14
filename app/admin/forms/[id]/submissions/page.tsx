@@ -22,8 +22,10 @@ import {
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { ArrowLeft, Download, ExternalLink } from "lucide-react";
 import type { FormField } from "@/lib/types";
+import { CopyLinkButton } from "@/components/copy-link-btn";
 
 export const dynamic = "force-dynamic";
+const appURL = process.env.NEXT_PUBLIC_APP_URL ?? "https://forms.femidabot.com";
 
 interface SubmissionsPageProps {
   params: Promise<{ id: string }>;
@@ -171,7 +173,7 @@ export default async function SubmissionsPage({
             </p>
           ) : (
             <div className="overflow-x-auto">
-              <Table className="[&_td]:align-top">
+              <Table className="[&_td]:align-middle">
                 <TableHeader>
                   <TableRow>
                     <TableHead>№</TableHead>
@@ -181,11 +183,12 @@ export default async function SubmissionsPage({
                     {form.fields.map((field) => (
                       <TableHead key={field.id}>{field.label}</TableHead>
                     ))}
+                    <TableHead>Дії</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {submissions.map((submission, index) => (
-                    <TableRow key={submission.id} className="align-top">
+                    <TableRow key={submission.id} className="align-middle">
                       <TableCell>{submissions.length - index}</TableCell>
                       <TableCell>{submission.user.discord_id}</TableCell>
                       <TableCell className="whitespace-nowrap">
@@ -217,6 +220,15 @@ export default async function SubmissionsPage({
                           {renderAnswer(field, submission.answers[field.id])}
                         </TableCell>
                       ))}
+                      <TableCell>
+                        <CopyLinkButton
+                          url={
+                            appURL +
+                            `/submissions/${submission.id}/vote?formId=${form.id}`
+                          }
+                          successMsg="Посилання на голосування за цю роботу скопійовано"
+                        />
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>

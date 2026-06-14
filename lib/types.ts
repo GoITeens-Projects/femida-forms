@@ -50,3 +50,74 @@ export interface Submission {
   user?: User;
   form?: Form;
 }
+
+export interface Contest {
+  id: string;
+  form_id: string;
+  hide_participants_names: boolean;
+  allow_multiple_votes: boolean;
+  starts_at: string;
+  ends_at: string;
+  form?: Form;
+}
+
+export type NotSavedContest = Omit<Contest, "id" | "form_id" | "form">;
+
+export interface Vote {
+  id: string;
+  user_id: string;
+  contest_id: string;
+  submission_id: string;
+  created_at: string;
+  client_fingerprint?: Partial<ClientFingerprint>;
+  backend_fingerprint: BackendFingerprint;
+
+  user: User;
+  contest: Contest;
+  submission: Submission;
+}
+
+export interface ClientFingerprint {
+  visitorId: string;
+  canvas_hash: string;
+  audio_hash: string;
+  // fonts_hash: string;
+  gpu: {
+    vendor: string;
+    renderer: string;
+  };
+  screen: string;
+  timezone: string;
+  languages: string;
+}
+
+export type Geo = {
+  source: "cloudflare" | "geoip-lite" | "ip-api.com";
+  country: string;
+  region: string;
+  city: string;
+  // lat: string;
+  // lon: string;
+  timezone: string;
+};
+
+export interface ASNData {
+  ip: string;
+  asn: string; // "AS16161"
+  asn_org: string; // "Google LLC"
+  isp: string; // "Google Public DNS"
+}
+
+//? The same for browser and OS
+interface FingerprintBasicInfo {
+  name: string;
+  version: string;
+}
+
+export type BackendFingerprint = {
+  geo: Geo;
+  asn: ASNData;
+  browser: FingerprintBasicInfo;
+  os: FingerprintBasicInfo;
+  acceptLanguage: string | null;
+};

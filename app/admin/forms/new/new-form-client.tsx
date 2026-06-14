@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Form, NotSavedForm } from "@/lib/types";
+import { Form, NotSavedContest, NotSavedForm } from "@/lib/types";
 import { FormBuilder } from "@/components/form-builder";
 import { isPast } from "date-fns";
 
@@ -45,21 +45,34 @@ export default function NewFormPageClient({ formId }: { formId?: string }) {
     loadForm();
   }, [formId, router]);
 
-  const handleSave = async (formData: {
-    title: string;
-    description: string | null;
-    fields: unknown[];
-  }) => {
+  const handleSave = async (
+    formData: {
+      title: string;
+      description: string | null;
+      fields: unknown[];
+    },
+    contest?: NotSavedContest,
+  ) => {
     try {
       const res = await fetch("/api/forms", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
+      const data = await res.json();
 
       if (!res.ok) {
-        const data = await res.json();
         throw new Error(data.error || "Не вдалося створити форму");
+      }
+
+      const contestRes = await fetch("/api/contests", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...contest, form_id: data.id }),
+      });
+      if (!contestRes.ok) {
+        const contestData = await contestRes.json();
+        throw new Error(contestData.error || "Не вдалося створити голосування");
       }
 
       toast.success("Форма успішно створена!");

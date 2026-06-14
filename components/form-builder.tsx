@@ -2,9 +2,17 @@
 
 import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
-import type { Form, FormField, FieldType, NotSavedForm } from "@/lib/types";
+import type {
+  Form,
+  FormField,
+  FieldType,
+  NotSavedForm,
+  Contest,
+  NotSavedContest,
+} from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Switch } from "./ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -36,7 +44,15 @@ import { DateTimePicker } from "./datetime-picker";
 
 interface FormBuilderProps {
   initialForm?: Form | NotSavedForm;
-  onSave: (form: NotSavedForm) => Promise<void>;
+  initialContest?: Contest | NotSavedContest;
+  onSave: (form: NotSavedForm, contest?: NotSavedContest) => Promise<void>;
+}
+
+interface ContestState extends Omit<NotSavedContest, "starts_at" | "ends_at"> {
+  enabled: boolean;
+
+  starts_at: Date | null;
+  ends_at: Date | null;
 }
 
 const FIELD_TYPES: { value: FieldType; label: string }[] = [
@@ -48,7 +64,11 @@ const FIELD_TYPES: { value: FieldType; label: string }[] = [
   { value: "FILE", label: "Файл" },
 ];
 
-export function FormBuilder({ initialForm, onSave }: FormBuilderProps) {
+export function FormBuilder({
+  initialForm,
+  initialContest,
+  onSave,
+}: FormBuilderProps) {
   const [title, setTitle] = useState(initialForm?.title || "");
   const [description, setDescription] = useState(
     initialForm?.description || "",
@@ -56,7 +76,18 @@ export function FormBuilder({ initialForm, onSave }: FormBuilderProps) {
   const [expiresAt, setExpiresAt] = useState<Date | null>(
     initialForm?.expires_at ? new Date(initialForm.expires_at) : null,
   );
+
   const [fields, setFields] = useState<FormField[]>(initialForm?.fields || []);
+  const [contest, setContest] = useState<ContestState>({
+    enabled: !!initialContest,
+    hide_participants_names: initialContest?.hide_participants_names ?? true,
+    allow_multiple_votes: initialContest?.allow_multiple_votes ?? true,
+    starts_at: initialContest?.starts_at
+      ? new Date(initialContest.starts_at)
+      : null,
+    ends_at: initialContest?.ends_at ? new Date(initialContest.ends_at) : null,
+  });
+
   const [saving, setSaving] = useState(false);
 
   const addField = () => {
@@ -101,14 +132,35 @@ export function FormBuilder({ initialForm, onSave }: FormBuilderProps) {
       options: f.options?.filter((o) => o.trim()) ?? [],
     }));
 
+    if (contest.enabled) {
+      if (!contest.starts_at) {
+        alert("Contest must have start date");
+        return;
+      }
+      if (!contest.ends_at) {
+        alert("Contest must have end date");
+        return;
+      }
+    }
+
     setSaving(true);
     try {
-      await onSave({
-        title,
-        description,
-        fields: cleanedFields,
-        expires_at: expiresAt ? expiresAt.toISOString() : null,
-      });
+      await onSave(
+        {
+          title,
+          description,
+          fields: cleanedFields,
+          expires_at: expiresAt ? expiresAt.toISOString() : null,
+        },
+        contest.enabled
+          ? {
+              hide_participants_names: contest.hide_participants_names,
+              allow_multiple_votes: contest.allow_multiple_votes,
+              starts_at: contest.starts_at!.toISOString(),
+              ends_at: contest.ends_at!.toISOString(),
+            }
+          : undefined,
+      );
     } finally {
       setSaving(false);
     }
@@ -177,6 +229,144 @@ export function FormBuilder({ initialForm, onSave }: FormBuilderProps) {
           </div>
           {/* expiration date selection end */}
         </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between">
+          <div className="flex items-center gap-2">
+            <CardTitle>Голосування</CardTitle>
+          </div>
+          <Switch
+            checked={contest.enabled}
+            onCheckedChange={() =>
+              setContest({ ...contest, enabled: !contest.enabled })
+            }
+            aria-label="Увімкнути голосування"
+          />
+        </CardHeader>
+
+        {contest.enabled && (
+          <CardContent className="space-y-5">
+            {/* Voting period */}
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div className="space-y-2">
+                <Label>Початок голосування (Київський час)</Label>
+                <div className="flex gap-2 items-start">
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className="w-fit justify-start text-left font-normal"
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {contest.starts_at
+                          ? format(
+                              toZonedTime(contest.starts_at, "Europe/Kyiv"),
+                              "PPP HH:mm",
+                              { locale: uk },
+                            )
+                          : "Вкажіть дату"}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <DateTimePicker
+                        value={contest.starts_at}
+                        onChange={(newDate) =>
+                          setContest({ ...contest, starts_at: newDate })
+                        }
+                      />
+                    </PopoverContent>
+                  </Popover>
+                  {contest.starts_at && (
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() =>
+                        setContest({ ...contest, starts_at: null })
+                      }
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  )}
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label>Завершення голосування (Київський час)</Label>
+                <div className="flex gap-2 items-start">
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className="w-fit justify-start text-left font-normal"
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {contest.ends_at
+                          ? format(
+                              toZonedTime(contest.ends_at, "Europe/Kyiv"),
+                              "PPP HH:mm",
+                              { locale: uk },
+                            )
+                          : "Вкажіть дату"}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <DateTimePicker
+                        value={contest.ends_at}
+                        onChange={(newDate) =>
+                          setContest({ ...contest, ends_at: newDate })
+                        }
+                      />
+                    </PopoverContent>
+                  </Popover>
+                  {contest.ends_at && (
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => setContest({ ...contest, ends_at: null })}
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Options */}
+            <div className="space-y-3">
+              <div className="flex items-center gap-3">
+                <Switch
+                  id="hide-names"
+                  checked={contest.hide_participants_names}
+                  onCheckedChange={() =>
+                    setContest({
+                      ...contest,
+                      hide_participants_names: !contest.hide_participants_names,
+                    })
+                  }
+                />
+                <Label htmlFor="hide-names" className="cursor-pointer">
+                  Приховати імена учасників
+                </Label>
+              </div>
+              <div className="flex items-center gap-3">
+                <Switch
+                  id="multiple-votes"
+                  checked={contest.allow_multiple_votes}
+                  onCheckedChange={() =>
+                    setContest({
+                      ...contest,
+                      allow_multiple_votes: !contest.allow_multiple_votes,
+                    })
+                  }
+                />
+                <Label htmlFor="multiple-votes" className="cursor-pointer">
+                  Дозволити кілька голосів від одного користувача
+                </Label>
+              </div>
+            </div>
+          </CardContent>
+        )}
       </Card>
 
       <Card>

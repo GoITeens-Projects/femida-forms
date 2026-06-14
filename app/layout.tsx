@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { IBM_Plex_Sans, IBM_Plex_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
+import { FingerprintProvider } from "@fingerprint/react";
 import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider } from "@/components/auth-provider";
 import { Header } from "@/components/header";
@@ -51,14 +52,18 @@ export default function RootLayout({
     >
       <body className="antialiased">
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <AuthProvider>
-            <div className="flex min-h-screen flex-col">
-              <Header />
-              <main className="flex-1">{children}</main>
-            </div>
-          </AuthProvider>
-          <Toaster />
-          {process.env.NODE_ENV === "production" && <Analytics />}
+          <FingerprintProvider
+            apiKey={process.env.NEXT_PUBLIC_FINGERPRINT_KEY as string}
+          >
+            <AuthProvider>
+              <div className="flex min-h-screen flex-col">
+                <Header />
+                <main className="flex-1">{children}</main>
+              </div>
+            </AuthProvider>
+            <Toaster />
+            {process.env.NODE_ENV === "production" && <Analytics />}
+          </FingerprintProvider>
         </ThemeProvider>
       </body>
     </html>

@@ -19,8 +19,16 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Plus, FileText, Users, BarChart3, Pencil, Table2 } from "lucide-react";
-import { CopyFormLinkButton } from "@/components/copy-form-link-btn";
+import {
+  Plus,
+  FileText,
+  Users,
+  BarChart3,
+  Pencil,
+  Table2,
+  Table as TableIcon,
+} from "lucide-react";
+import { CopyLinkButton } from "@/components/copy-link-btn";
 import { DeleteFormButton } from "@/components/delete-form-btn";
 import { DuplicateFormButton } from "@/components/duplicate-form-btn";
 import { DesktopTooltip } from "@/components/ui/desktop-tooltip";
@@ -140,8 +148,9 @@ export default async function AdminPage() {
                         <div className="flex justify-end gap-1">
                           <DesktopTooltip content="Скопіювати посилання">
                             <div>
-                              <CopyFormLinkButton
+                              <CopyLinkButton
                                 url={appURL + `/forms/${form.id}`}
+                                successMsg="Посилання на форму скопійовано"
                               />
                             </div>
                           </DesktopTooltip>
@@ -150,6 +159,14 @@ export default async function AdminPage() {
                             <Link href={`/admin/forms/${form.id}/submissions`}>
                               <Button variant="ghost" size="icon-sm">
                                 <Table2 className="h-4 w-4" />
+                              </Button>
+                            </Link>
+                          </DesktopTooltip>
+
+                          <DesktopTooltip content="Голосування">
+                            <Link href={`/admin/forms/${form.id}/votes`}>
+                              <Button variant="ghost" size="icon-sm">
+                                <TableIcon className="h-4 w-4" />
                               </Button>
                             </Link>
                           </DesktopTooltip>
@@ -168,7 +185,7 @@ export default async function AdminPage() {
                             </Link>
                           </DesktopTooltip>
 
-                          <DesktopTooltip content="Видалити" >
+                          <DesktopTooltip content="Видалити">
                             <div>
                               <DeleteFormButton
                                 formId={form.id}

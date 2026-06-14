@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createForm, getAllForms } from "@/lib/db";
+import { createContest, createForm, getAllForms } from "@/lib/db";
 import { getSession, isAdmin } from "@/lib/auth";
 import { getFormsByUserSubmissions } from "@/lib/db";
 import { FormField } from "@/lib/types";
@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
 
   try {
     const body = await request.json();
-    const { title, description, fields, expires_at } = body;
+    const { title, description, fields, expires_at, contest } = body;
 
     if (!title || !fields) {
       return NextResponse.json(
