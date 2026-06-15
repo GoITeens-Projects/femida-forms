@@ -29,6 +29,8 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { ArrowLeft, Download, ExternalLink } from "lucide-react";
 import type { FormField } from "@/lib/types";
 import { CopyLinkButton } from "@/components/copy-link-btn";
+import { InfoTooltip } from "@/components/ui/info-tooltip";
+import { TableHeadWithTooltip } from "@/components/ui/table-head-with-tooltip";
 
 export const dynamic = "force-dynamic";
 
@@ -94,12 +96,33 @@ export default async function VotesPage({ params }: VotesPageProps) {
                   <TableRow>
                     <TableHead>Користувач</TableHead>
                     <TableHead>Дата</TableHead>
+                    {/* <TableHead >
+                      Відбиток
+                      <InfoTooltip textContent="Унікальний ідентифікатор користувача. Якщо збігається, це один і той самий пристрій" />
+                    </TableHead> */}
+                    <TableHeadWithTooltip tooltip="Унікальний ідентифікатор користувача. Якщо збігається, це один і той самий пристрій">
+                      Відбиток
+                    </TableHeadWithTooltip>
                     <TableHead>Країна</TableHead>
                     <TableHead>Місто</TableHead>
+                    {/* <TableHead>
+                      Часовий пояс
+                      <InfoTooltip textContent="Один береться з браузеру користувача, інший - з запиту. Якщо вони не збігаються це підозріло" />
+                    </TableHead> */}
+                    <TableHeadWithTooltip tooltip="Один береться з браузеру користувача, інший - з запиту. Якщо вони не збігаються це підозріло">
+                      Часовий пояс
+                    </TableHeadWithTooltip>
                     <TableHead>ISP</TableHead>
                     <TableHead>Браузер</TableHead>
-                    <TableHead>ОС</TableHead>
-                    <TableHead>Мова</TableHead>
+                    {/* <TableHead>
+                      ОС
+                      <InfoTooltip textContent="Операційна система користувача. Іноді плутає Win 11 та Win 10" />
+                    </TableHead> */}
+                    <TableHeadWithTooltip tooltip="Операційна система користувача. Іноді плутає Win 11 та Win 10">
+                      ОС
+                    </TableHeadWithTooltip>
+                    <TableHead>Мови</TableHead>
+                    <TableHead>Екран</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -132,10 +155,18 @@ export default async function VotesPage({ params }: VotesPageProps) {
                         )}
                       </TableCell>
                       <TableCell>
+                        {vote.client_fingerprint?.visitorId ?? "невідомо"}
+                      </TableCell>
+                      <TableCell>
                         {vote.backend_fingerprint.geo.country},{" "}
                         {vote.backend_fingerprint.geo.region}
                       </TableCell>
                       <TableCell>{vote.backend_fingerprint.geo.city}</TableCell>
+                      <TableCell>
+                        <span className="text-xs text-muted-foreground">Клієнт -</span>{" "}
+                        {vote.client_fingerprint?.timezone ?? "невідомо"} <br />
+                        <span className="text-xs text-muted-foreground">Сервер -</span> {vote.backend_fingerprint.geo.timezone}
+                      </TableCell>
                       <TableCell className="whitespace-nowrap">
                         <div className="flex flex-col">
                           <span>{vote.backend_fingerprint.asn.isp}</span>
@@ -153,7 +184,10 @@ export default async function VotesPage({ params }: VotesPageProps) {
                         {vote.backend_fingerprint.os.version}
                       </TableCell>
                       <TableCell>
-                        {vote.backend_fingerprint.acceptLanguage ?? "—"}
+                        {vote.backend_fingerprint.acceptLanguage ?? "--"}
+                      </TableCell>
+                      <TableCell>
+                        {vote.client_fingerprint?.screen ?? "--"}
                       </TableCell>
                     </TableRow>
                   ))}

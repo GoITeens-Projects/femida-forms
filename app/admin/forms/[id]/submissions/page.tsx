@@ -186,7 +186,7 @@ export default async function SubmissionsPage({
                     <TableHead>Дії</TableHead>
                   </TableRow>
                 </TableHeader>
-                <TableBody>
+              <TableBody>
                   {submissions.map((submission, index) => (
                     <TableRow key={submission.id} className="align-middle">
                       <TableCell>{submissions.length - index}</TableCell>
