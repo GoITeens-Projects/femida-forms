@@ -51,7 +51,7 @@ export default function NewFormPageClient({ formId }: { formId?: string }) {
       description: string | null;
       fields: unknown[];
     },
-    contest?: NotSavedContest,
+    contest?: NotSavedContest | null,
   ) => {
     try {
       const res = await fetch("/api/forms", {

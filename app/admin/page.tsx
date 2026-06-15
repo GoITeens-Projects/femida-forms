@@ -1,7 +1,10 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { getSession, isAdmin } from "@/lib/auth";
-import { getAllForms, getAllSubmissions } from "@/lib/db";
+import {
+  getAllFormsWithContests,
+  getAllSubmissions,
+} from "@/lib/db";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -44,7 +47,7 @@ export default async function AdminPage() {
     redirect("/");
   }
 
-  const forms = await getAllForms();
+  const forms = await getAllFormsWithContests();
   const submissions = await getAllSubmissions();
 
   const stats = {
@@ -163,13 +166,15 @@ export default async function AdminPage() {
                             </Link>
                           </DesktopTooltip>
 
-                          <DesktopTooltip content="Голосування">
-                            <Link href={`/admin/forms/${form.id}/votes`}>
-                              <Button variant="ghost" size="icon-sm">
-                                <TableIcon className="h-4 w-4" />
-                              </Button>
-                            </Link>
-                          </DesktopTooltip>
+                          {form.contest && (
+                            <DesktopTooltip content="Голосування">
+                              <Link href={`/admin/forms/${form.id}/votes`}>
+                                <Button variant="ghost" size="icon-sm">
+                                  <TableIcon className="h-4 w-4" />
+                                </Button>
+                              </Link>
+                            </DesktopTooltip>
+                          )}
 
                           <DesktopTooltip content="Створити дублікат">
                             <div>

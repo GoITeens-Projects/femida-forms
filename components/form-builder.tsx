@@ -45,7 +45,7 @@ import { DateTimePicker } from "./datetime-picker";
 interface FormBuilderProps {
   initialForm?: Form | NotSavedForm;
   initialContest?: Contest | NotSavedContest;
-  onSave: (form: NotSavedForm, contest?: NotSavedContest) => Promise<void>;
+  onSave: (form: NotSavedForm, contest?: NotSavedContest | null) => Promise<void>;
 }
 
 interface ContestState extends Omit<NotSavedContest, "starts_at" | "ends_at"> {
@@ -159,7 +159,9 @@ export function FormBuilder({
               starts_at: contest.starts_at!.toISOString(),
               ends_at: contest.ends_at!.toISOString(),
             }
-          : undefined,
+          : initialContest
+            ? null
+            : undefined,
       );
     } finally {
       setSaving(false);

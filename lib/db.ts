@@ -80,6 +80,23 @@ export async function getAllForms(): Promise<Form[]> {
   return data as Form[];
 }
 
+export async function getAllFormsWithContests(): Promise<
+  (Form & { contest: Contest | null })[]
+> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("forms")
+    .select("*, contests(*)")
+    .order("created_at", { ascending: false });
+  if (error || !data) return [];
+  return (data as (Form & { contests: Contest | Contest[] | null })[]).map(
+    ({ contests, ...form }) => ({
+      ...form,
+      contest: Array.isArray(contests) ? (contests[0] ?? null) : contests,
+    }),
+  );
+}
+
 export async function getUnsubmittedValidForms(userId: string) {
   const supabase = await createClient();
 

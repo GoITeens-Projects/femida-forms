@@ -30,8 +30,8 @@ export async function POST(request: NextRequest) {
 
     const contest = createContest({
       form_id,
-      hideParticipantsNames,
-      allowMultipleVotes,
+      hide_participants_names: hideParticipantsNames,
+      allow_multiple_votes: allowMultipleVotes,
       starts_at,
       ends_at,
     });

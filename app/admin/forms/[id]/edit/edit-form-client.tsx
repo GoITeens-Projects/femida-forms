@@ -3,24 +3,41 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { FormBuilder } from "@/components/form-builder";
-import type { Form } from "@/lib/types";
+import type { Form, Contest, NotSavedContest } from "@/lib/types";
 import { toast } from "sonner";
 import { usePageTitle } from "@/hooks/use-page-title";
 
-export default function EditFormPageClient({ formId }: { formId: string }) {
+export default function EditFormPageClient({
+  formId,
+  contestId,
+}: {
+  formId: string;
+  contestId?: string;
+}) {
   const router = useRouter();
   const [form, setForm] = useState<Form | null>(null);
+  const [contest, setContest] = useState<Contest | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function loadForm() {
       try {
-        const res = await fetch(`/api/forms/${formId}`);
-        if (!res.ok) {
+        const requests = [fetch(`/api/forms/${formId}`)];
+        if (contestId) requests.push(fetch(`/api/contests/${contestId}`));
+
+        const [formRes, contestRes] = await Promise.all(requests);
+
+        if (!formRes.ok || (contestRes && !contestRes.ok)) {
           router.push("/admin");
           return;
         }
-        const formData = await res.json();
+
+        const formData = await formRes.json();
+        if (contestRes) {
+          const contestData = await contestRes.json();
+          setContest(contestData);
+        }
+
         setForm(formData);
       } catch (error) {
         console.error("Error loading form:", error);
@@ -29,27 +46,69 @@ export default function EditFormPageClient({ formId }: { formId: string }) {
         setLoading(false);
       }
     }
-
     loadForm();
-  }, [formId, router]);
+  }, [formId, contestId, router]);
 
   usePageTitle(form ? "Редагування " + form?.title : undefined);
 
-  const handleSave = async (formData: {
-    title: string;
-    description: string | null;
-    fields: unknown[];
-  }) => {
+  const handleSave = async (
+    formData: {
+      title: string;
+      description: string | null;
+      fields: unknown[];
+      expires_at: string | null;
+    },
+    contest?: NotSavedContest | null,
+  ) => {
     try {
-      const res = await fetch(`/api/forms/${formId}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
+      const requests = [
+        fetch(`/api/forms/${formId}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
+        }),
+      ];
 
-      if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.error || "Не вдалося оновити форму");
+      if (contest === null && contestId) {
+        // Delete existing contest
+        requests.push(
+          fetch(`/api/contests/${contestId}`, { method: "DELETE" }),
+        );
+      } else if (contest !== undefined && contest !== null) {
+        if (contestId) {
+          // Update existing contest
+          requests.push(
+            fetch(`/api/contests/${contestId}`, {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(contest),
+            }),
+          );
+        } else {
+          // Create new contest
+          requests.push(
+            fetch(`/api/contests`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                form_id: formId,
+                hideParticipantsNames: contest.hide_participants_names,
+                allowMultipleVotes: contest.allow_multiple_votes,
+                starts_at: contest.starts_at,
+                ends_at: contest.ends_at,
+              }),
+            }),
+          );
+        }
+      }
+
+      const responses = await Promise.all(requests);
+
+      for (const res of responses) {
+        if (!res.ok) {
+          const data = await res.json();
+          throw new Error(data.error || "Не вдалося оновити форму");
+        }
       }
 
       toast.success("Форма успішно оновлена!");
@@ -85,7 +144,11 @@ export default function EditFormPageClient({ formId }: { formId: string }) {
           Оновіть поля та налаштування форми
         </p>
       </div>
-      <FormBuilder initialForm={form} onSave={handleSave} />
+      <FormBuilder
+        initialForm={form}
+        initialContest={contest ?? undefined}
+        onSave={handleSave}
+      />
     </div>
   );
 }
