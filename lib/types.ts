@@ -6,6 +6,8 @@ export interface User {
   avatar: string | null;
   role: "ADMIN" | "USER";
   created_at: string;
+  registered_at_discord: string;
+  joined_server_at: string;
 }
 
 // Form field types

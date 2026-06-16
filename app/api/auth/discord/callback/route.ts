@@ -25,6 +25,12 @@ interface GuildMember {
   nick?: string;
   avatar?: string;
   roles: string[];
+  joined_at: string;
+}
+function getDiscordRegistrationDate(userId: string): string {
+  const DISCORD_EPOCH = 1420070400000;
+  const timestamp = parseInt(userId) / 4194304 + DISCORD_EPOCH;
+  return new Date(timestamp).toISOString();
 }
 
 export async function GET(request: NextRequest) {
@@ -96,6 +102,8 @@ export async function GET(request: NextRequest) {
         ? `https://cdn.discordapp.com/avatars/${discordUser.user.id}/${discordUser.user.avatar}.png`
         : null,
       role: isAdmin ? "ADMIN" : "USER",
+      joined_server_at: discordUser.joined_at,
+      registered_at_discord: getDiscordRegistrationDate(discordUser.user.id),
     });
 
     if (!user) {

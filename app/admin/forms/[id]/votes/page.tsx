@@ -31,6 +31,7 @@ import type { FormField } from "@/lib/types";
 import { CopyLinkButton } from "@/components/copy-link-btn";
 import { InfoTooltip } from "@/components/ui/info-tooltip";
 import { TableHeadWithTooltip } from "@/components/ui/table-head-with-tooltip";
+import { timeAgo } from "@/lib/timeAgo";
 
 export const dynamic = "force-dynamic";
 
@@ -96,6 +97,8 @@ export default async function VotesPage({ params }: VotesPageProps) {
                   <TableRow>
                     <TableHead>Користувач</TableHead>
                     <TableHead>Дата</TableHead>
+                    <TableHead>Аккаунт створений</TableHead>
+                    <TableHead>Приєднався до серверу</TableHead>
                     {/* <TableHead >
                       Відбиток
                       <InfoTooltip textContent="Унікальний ідентифікатор користувача. Якщо збігається, це один і той самий пристрій" />
@@ -154,6 +157,15 @@ export default async function VotesPage({ params }: VotesPageProps) {
                           { timeZone: "Europe/Kiev" },
                         )}
                       </TableCell>
+
+                      <TableCell>
+                        {timeAgo(vote.user.registered_at_discord)}
+                      </TableCell>
+
+                      <TableCell>
+                        {timeAgo(vote.user.joined_server_at)}
+                      </TableCell>
+
                       <TableCell>
                         {vote.client_fingerprint?.visitorId ?? "невідомо"}
                       </TableCell>
@@ -163,9 +175,14 @@ export default async function VotesPage({ params }: VotesPageProps) {
                       </TableCell>
                       <TableCell>{vote.backend_fingerprint.geo.city}</TableCell>
                       <TableCell>
-                        <span className="text-xs text-muted-foreground">Клієнт -</span>{" "}
+                        <span className="text-xs text-muted-foreground">
+                          Клієнт -
+                        </span>{" "}
                         {vote.client_fingerprint?.timezone ?? "невідомо"} <br />
-                        <span className="text-xs text-muted-foreground">Сервер -</span> {vote.backend_fingerprint.geo.timezone}
+                        <span className="text-xs text-muted-foreground">
+                          Сервер -
+                        </span>{" "}
+                        {vote.backend_fingerprint.geo.timezone}
                       </TableCell>
                       <TableCell className="whitespace-nowrap">
                         <div className="flex flex-col">
