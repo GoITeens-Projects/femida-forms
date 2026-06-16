@@ -58,7 +58,6 @@ export default async function VotesPage({ params }: VotesPageProps) {
   }
 
   const votes = await getVotesByFormId(form.id);
-
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8 flex items-center justify-between">
@@ -126,6 +125,7 @@ export default async function VotesPage({ params }: VotesPageProps) {
                     </TableHeadWithTooltip>
                     <TableHead>Мови</TableHead>
                     <TableHead>Екран</TableHead>
+                    <TableHead>Відеокарта</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -205,6 +205,9 @@ export default async function VotesPage({ params }: VotesPageProps) {
                       </TableCell>
                       <TableCell>
                         {vote.client_fingerprint?.screen ?? "--"}
+                      </TableCell>
+                      <TableCell className="max-w-sm">
+                        <p className="truncate">{vote.client_fingerprint?.gpu?.renderer ?? "--"}</p>
                       </TableCell>
                     </TableRow>
                   ))}
