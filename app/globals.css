@@ -190,6 +190,7 @@
   --tracking-widest: calc(var(--tracking-normal) + 0.1em);
 
   /* --background-image-hero: url("/hero-banner@light.png"); */
+  --text-tiny: 0.625rem;
 }
 
 :root {

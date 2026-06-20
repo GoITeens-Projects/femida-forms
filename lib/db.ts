@@ -135,6 +135,25 @@ export async function getFormById(id: string): Promise<Form | null> {
   return data as Form;
 }
 
+export async function getFormByIdWithContest(
+  id: string,
+): Promise<(Form & { contest: Contest | null }) | null> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("forms")
+    .select("*, contests(*)")
+    .eq("id", id)
+    .single();
+  if (error || !data) return null;
+  const { contests, ...form } = data;
+  return {
+    ...(form as Form),
+    contest: Array.isArray(contests)
+      ? (contests[0] ?? null)
+      : (contests ?? null),
+  };
+}
+
 export async function createForm(
   form: Omit<Form, "id" | "created_at" | "updated_at">,
 ): Promise<Form | null> {
@@ -423,7 +442,7 @@ export async function getVotesByFormId(
   const { data, error } = await supabase
     .from("votes")
     .select(
-      "*, user:users(*), submission:submissions(*), contest:contests!inner(form_id)",
+      "*, user:users(*), submission:submissions(*, user:users(*)), contest:contests!inner(form_id)",
     )
     .eq("contests.form_id", formId)
     .order("created_at", { ascending: false });

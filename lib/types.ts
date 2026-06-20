@@ -123,3 +123,29 @@ export type BackendFingerprint = {
   os: FingerprintBasicInfo;
   acceptLanguage: string | null;
 };
+export interface VoteResult {
+  vote: Vote;
+  status: {
+    ok: boolean;
+    reason?: string;
+  };
+  signals: SuspicionSignal[];
+}
+
+export type VoteWithRelations = Vote & { user: User; submission: Submission };
+
+export interface SuspicionSignal {
+  type: SuspicionSignalEnum;
+  description: string;
+}
+
+export enum SuspicionSignalEnum {
+  DUPLICATE_VISITOR_ID = "DUPLICATE_VISITOR_ID",
+  DUPLICATE_CANVAS_HASH = "DUPLICATE_CANVAS_HASH",
+  DUPLICATE_AUDIO_HASH = "DUPLICATE_AUDIO_HASH",
+  DUPLICATE_GPU = "DUPLICATE_GPU",
+  DUPLICATE_GEO_ASN = "DUPLICATE_GEO_ASN",
+  DUPLICATE_BROWSER_OS = "DUPLICATE_BROWSER_OS",
+  NEW_DISCORD_ACCOUNT = "NEW_DISCORD_ACCOUNT",
+  NEW_SERVER_MEMBER = "NEW_SERVER_MEMBER",
+}

@@ -5,6 +5,7 @@ import { getSession, isAdmin } from "@/lib/auth";
 import {
   getContestByFormId,
   getFormById,
+  getFormByIdWithContest,
   getSubmissionsByFormId,
   getVotesByContestId,
   getVotesByFormId,
@@ -32,6 +33,8 @@ import { CopyLinkButton } from "@/components/copy-link-btn";
 import { InfoTooltip } from "@/components/ui/info-tooltip";
 import { TableHeadWithTooltip } from "@/components/ui/table-head-with-tooltip";
 import { timeAgo } from "@/lib/timeAgo";
+import { ContestResultDialog } from "@/components/contest-result-dialog";
+import { isAfter } from "date-fns";
 
 export const dynamic = "force-dynamic";
 
@@ -51,9 +54,12 @@ export default async function VotesPage({ params }: VotesPageProps) {
   }
 
   const { id } = await params;
-  const form = await getFormById(id);
-
+  const form = await getFormByIdWithContest(id);
   if (!form) {
+    redirect("/admin");
+  }
+  const submissions = await getSubmissionsByFormId(form.id);
+  if (!submissions) {
     redirect("/admin");
   }
 
@@ -75,6 +81,13 @@ export default async function VotesPage({ params }: VotesPageProps) {
             {votes.length === 1 ? "" : votes.length < 5 ? "и" : "ів"}
           </p>
         </div>
+        {votes.length > 0 && submissions.length > 0 && (
+          <ContestResultDialog
+            allVotes={votes}
+            contest={form.contest}
+            submissions={submissions}
+          />
+        )}
       </div>
 
       <Card>
@@ -95,6 +108,7 @@ export default async function VotesPage({ params }: VotesPageProps) {
                 <TableHeader>
                   <TableRow>
                     <TableHead>Користувач</TableHead>
+                    <TableHead>Голос за</TableHead>
                     <TableHead>Дата</TableHead>
                     <TableHead>Аккаунт створений</TableHead>
                     <TableHead>Приєднався до серверу</TableHead>
@@ -146,6 +160,28 @@ export default async function VotesPage({ params }: VotesPageProps) {
                             </span>
                             <span className="text-xs text-muted-foreground">
                               {vote.user.discord_id}
+                            </span>
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          <Avatar className="h-6 w-6">
+                            <AvatarImage
+                              src={vote.submission.user?.avatar || undefined}
+                            />
+                            <AvatarFallback>
+                              {vote.submission.user?.username
+                                ?.charAt(0)
+                                ?.toUpperCase() || "?"}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div className="flex flex-col">
+                            <span className="font-medium">
+                              {vote.submission.user?.username || "Невідомо"}
+                            </span>
+                            <span className="text-xs text-muted-foreground">
+                              {vote.submission.user?.discord_id}
                             </span>
                           </div>
                         </div>
@@ -207,7 +243,9 @@ export default async function VotesPage({ params }: VotesPageProps) {
                         {vote.client_fingerprint?.screen ?? "--"}
                       </TableCell>
                       <TableCell className="max-w-sm">
-                        <p className="truncate">{vote.client_fingerprint?.gpu?.renderer ?? "--"}</p>
+                        <p className="truncate">
+                          {vote.client_fingerprint?.gpu?.renderer ?? "--"}
+                        </p>
                       </TableCell>
                     </TableRow>
                   ))}
