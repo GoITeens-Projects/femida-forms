@@ -31,6 +31,7 @@ import {
   Save,
   CalendarIcon,
   X,
+  ClockArrowUp,
 } from "lucide-react";
 import { format } from "date-fns";
 import { uk } from "date-fns/locale";
@@ -41,6 +42,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { DateTimePicker } from "./datetime-picker";
+import { DesktopTooltip } from "./ui/desktop-tooltip";
 
 interface FormBuilderProps {
   initialForm?: Form | NotSavedForm;
@@ -292,6 +294,22 @@ export function FormBuilder({
                     >
                       <X className="h-4 w-4" />
                     </Button>
+                  )}
+                  {expiresAt && (
+                    <DesktopTooltip content="Відкрити голосування одразу після закриття форми">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() =>
+                          setContest((prev) => ({
+                            ...prev,
+                            starts_at: expiresAt,
+                          }))
+                        }
+                      >
+                        <ClockArrowUp className="h-4 w-4" />
+                      </Button>
+                    </DesktopTooltip>
                   )}
                 </div>
               </div>

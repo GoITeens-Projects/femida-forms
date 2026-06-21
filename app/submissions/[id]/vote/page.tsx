@@ -1,7 +1,7 @@
 import { getContestByFormId, getSubmissionsByFormId } from "@/lib/db";
 import SubmissionVotePageClient from "./submission-vote-page-client";
 import { redirect } from "next/navigation";
-import { isAfter, isPast, parseISO } from "date-fns";
+import { isPast, parseISO } from "date-fns";
 import {
   Card,
   CardContent,
