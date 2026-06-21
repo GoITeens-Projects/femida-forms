@@ -23,7 +23,7 @@ export async function POST(
   const { fingerprint } = (await request.json()) as {
     fingerprint: ClientFingerprint;
   };
-  console.log("fp", fingerprint);
+  // console.log("fp", fingerprint);
 
   try {
     const contest = await getContestByFormId(id);
@@ -36,13 +36,13 @@ export async function POST(
     const now = new Date();
     if (new Date(contest.starts_at) > now) {
       return NextResponse.json(
-        { error: "Contest has not started yet" },
+        { error: "Голосування ще не почалось" },
         { status: 403 },
       );
     }
     if (new Date(contest.ends_at) < now) {
       return NextResponse.json(
-        { error: "Contest has already ended" },
+        { error: "Голосування вже закінчилось" },
         { status: 403 },
       );
     }

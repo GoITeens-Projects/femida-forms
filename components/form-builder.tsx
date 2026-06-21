@@ -45,7 +45,10 @@ import { DateTimePicker } from "./datetime-picker";
 interface FormBuilderProps {
   initialForm?: Form | NotSavedForm;
   initialContest?: Contest | NotSavedContest;
-  onSave: (form: NotSavedForm, contest?: NotSavedContest | null) => Promise<void>;
+  onSave: (
+    form: NotSavedForm,
+    contest?: NotSavedContest | null,
+  ) => Promise<void>;
 }
 
 interface ContestState extends Omit<NotSavedContest, "starts_at" | "ends_at"> {
@@ -113,17 +116,17 @@ export function FormBuilder({
 
   const handleSave = async () => {
     if (!title.trim()) {
-      alert("Please enter a form title");
+      alert("Введіть назву форми");
       return;
     }
 
     if (fields.length === 0) {
-      alert("Please add at least one field");
+      alert("Додайте хоча б одне обов'язкове поле");
       return;
     }
 
     if (fields.some((f) => !f.label.trim())) {
-      alert("All fields must have a label");
+      alert("Усі поля мають мати назву");
       return;
     }
 
@@ -134,11 +137,11 @@ export function FormBuilder({
 
     if (contest.enabled) {
       if (!contest.starts_at) {
-        alert("Contest must have start date");
+        alert("Голосування має мати дату початку");
         return;
       }
       if (!contest.ends_at) {
-        alert("Contest must have end date");
+        alert("Голосування має мати дату кінця");
         return;
       }
     }
