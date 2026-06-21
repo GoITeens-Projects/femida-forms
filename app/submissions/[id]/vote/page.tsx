@@ -1,7 +1,7 @@
 import { getContestByFormId, getSubmissionsByFormId } from "@/lib/db";
 import SubmissionVotePageClient from "./submission-vote-page-client";
 import { redirect } from "next/navigation";
-import { isAfter, parseISO } from "date-fns";
+import { isAfter, isPast, parseISO } from "date-fns";
 import {
   Card,
   CardContent,
@@ -38,7 +38,7 @@ export default async function SubmissionVotePage({
       </div>
     );
 
-  if (isAfter(contest.ends_at, new Date()))
+  if (isPast(new Date(contest.ends_at)))
     return (
       <div className="container mx-auto px-4 py-8">
         <Card className="mx-auto max-w-md">
