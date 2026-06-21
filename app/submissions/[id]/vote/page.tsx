@@ -1,6 +1,19 @@
 import { getContestByFormId, getSubmissionsByFormId } from "@/lib/db";
 import SubmissionVotePageClient from "./submission-vote-page-client";
 import { redirect } from "next/navigation";
+import { isAfter, parseISO } from "date-fns";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { ArrowLeft, ClockAlert } from "lucide-react";
+import { format, toZonedTime } from "date-fns-tz";
+import { uk } from "date-fns/locale";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 interface SubmissionVotePageProps {
   params: Promise<{ id: string }>;
@@ -17,7 +30,7 @@ export default async function SubmissionVotePage({
   if (!formId) redirect("/");
 
   const contest = await getContestByFormId(formId);
-  
+
   if (!contest)
     return (
       <div className="container mx-auto px-4 py-8">
@@ -25,6 +38,34 @@ export default async function SubmissionVotePage({
       </div>
     );
 
+  if (isAfter(contest.ends_at, new Date()))
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <Card className="mx-auto max-w-md">
+          <CardHeader className="text-center">
+            <ClockAlert className="mx-auto mb-4 h-12 w-12" />
+            <CardTitle>На жаль, голосування вже закінчено</CardTitle>
+            <CardDescription>
+              Воно закрилось{" "}
+              {format(
+                toZonedTime(parseISO(contest.ends_at), "Europe/Kyiv"),
+                "d MMMM yyyy 'о' HH:mm",
+                { locale: uk },
+              )}
+              . <br /> Віддати свій голос вже неможливо
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Link href="/" className="block">
+              <Button variant="outline" className="w-full">
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                На головну
+              </Button>
+            </Link>
+          </CardContent>
+        </Card>
+      </div>
+    );
   const allFormSubmissions = await getSubmissionsByFormId(formId);
   const currentSubmission = allFormSubmissions.find((sub) => sub.id === id);
   if (!currentSubmission)
