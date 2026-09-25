@@ -31,7 +31,7 @@ cd femida-forms
 npm install
 ```
 
-4. Set up environment variables using the template
+4. Set up environment variables using the [template](./.env.template)
 
 5. Run the project
 
